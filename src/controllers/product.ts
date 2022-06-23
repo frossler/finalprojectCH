@@ -1,10 +1,11 @@
 import { RequestHandler } from 'express';
-import { Product } from '../models/Product';
+// import { Product } from '../models/Product';
+import { Product } from '../daos';
 
 export const getProducts: RequestHandler = async (req, res) => {
   try {
     if (req.query.id) {
-      const product = await Product.getById(parseInt(req.query.id as string));
+      const product = await Product.getById(req.query.id as string);
 
       return res.status(200).json(product);
     } else {
@@ -24,7 +25,7 @@ export const addProduct: RequestHandler = async (req, res) => {
   const { admin, ...data } = req.body;
 
   try {
-    const product = await Product.create(data);
+    const product = Product.create(data);
 
     return res.status(200).json(product);
   } catch (err) {
@@ -42,7 +43,7 @@ export const updateProduct: RequestHandler = async (req, res) => {
   console.log(id);
 
   try {
-    const products = await Product.update(parseInt(id), data);
+    const products = await Product.update(id, data);
 
     return res.status(200).json(products);
   } catch (err) {
@@ -59,7 +60,7 @@ export const deleteProduct: RequestHandler = async (req, res) => {
   console.log(id);
 
   try {
-    await Product.deleteById(parseInt(id));
+    await Product.delete(id);
 
     return res.status(200).json({ message: `Product with ID: ${id} deleted` });
   } catch (err) {
